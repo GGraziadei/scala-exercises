@@ -213,16 +213,23 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet:
    * and be implemented in the subclasses?
    */
   override def mostRetweeted: Tweet = {
-    var result = this.elem
-    try{ if this.left.mostRetweeted.retweets > result.retweets then result = left.mostRetweeted} catch {
-      case _: NoSuchElementException => result
-    }
+    var best = elem
+
     try {
-      if this.right.mostRetweeted.retweets > result.retweets then result = right.mostRetweeted
+      val leftBest = left.mostRetweeted
+      if (leftBest.retweets > best.retweets) best = leftBest
     } catch {
-      case _: NoSuchElementException => result
+      case _: NoSuchElementException => ()
     }
-    result
+
+    try {
+      val rightBest = right.mostRetweeted
+      if (rightBest.retweets > best.retweets) best = rightBest
+    } catch {
+      case _: NoSuchElementException => ()
+    }
+
+    best
   }
 
   /**
